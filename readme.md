@@ -78,7 +78,9 @@ class Human:
 ```
 
 ### Known quirks
-You need to separate the `self` parameter from the rest with a semicolon.
+- You need to separate the `self` parameter from the rest with a semicolon `;`.
+- The export marker `*` is using infix notation like so: `impl *Student`.
+- In the constructor `proc`, implicit return of the last expression is not supported.
 
 ### License
 

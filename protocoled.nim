@@ -98,7 +98,7 @@ proc transformClass(node: NimNode, b: ClassBuilder): NimNode =
          if n.params.len >= 2 and n.params[1][1].kind == nnkEmpty:
             n.params[1][1] = derivType
          result.add n
-      of nnkVarSection:
+      of nnkVarSection, nnkLetSection:
          n.copyChildrenTo(recList)
       else:
          error(n.lineInfo & ": Invalid node: " & n.repr)
@@ -114,7 +114,7 @@ macro protocol*(head, body): untyped =
 
    template addObjField(record, name, params) =
       record.add(nnkIdentDefs.newTree(name, nnkProcTy.newTree(params,
-                 newNimNode(nnkPragma).add(ident("nimcall"))), newEmptyNode()))
+                 nnkPragma.newTree(ident("nimcall"))), newEmptyNode()))
    template checkNotNil(name, field) =
       assert(name.field != nil)
 
@@ -122,7 +122,7 @@ macro protocol*(head, body): untyped =
       body.add(nnkCall.newTree(nnkDotExpr.newTree(name, field)).add(params))
 
    for n in body.children:
-      case n.kind:
+      case n.kind
       of nnkProcDef:
          if n.params.len < 2 or n.params[1][1].kind != nnkEmpty:
             error(n.params.lineInfo & ": Method's 'this' parameter not found")
@@ -144,9 +144,9 @@ macro protocol*(head, body): untyped =
          n.body.forwardCall(thisVar, objField, params)
          result.add n
       of nnkCommand:
+         expectKind(n[0], nnkIdent)
          if $n[0] != "impl": error("Invalid command " & $n[0])
          assert b.methNames.len > 0, "No methods declared"
-
          let implClass = transformClass(n, b)
          result.add implClass
       else:
@@ -159,13 +159,11 @@ when isMainModule:
       impl Movable:
          proc update(this) =
             echo("Moving forward.")
-
          proc newMovable(): Movable =
             new(result)
 
       impl *NotMovable:
          proc update(this) =
             echo("I'm staying put.")
-
          proc newNotMovable*(): NotMovable =
             new(result)
