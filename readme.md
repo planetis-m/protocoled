@@ -2,9 +2,9 @@
 # Protocoled — an interface macro for Nim
 
 ## About
-This nimble package contains two macros. One for easily implementing
+This nimble package contains the ``protocol`` macro for easily implementing
 [interfaces](https://en.wikipedia.org/wiki/Composition_over_inheritance)
-in Nim, and a much simpler one to create a class hierarchy.
+in Nim.
 
 ### The `protocol` macro
 Example:
@@ -48,33 +48,6 @@ proc evalPlus(e: PExpr): int = eval(PPlusExpr(e).a) + eval(PPlusExpr(e).b)
 
 proc newLit(x: int): PLiteral = PLiteral(evalImpl: evalLit, x: x)
 proc newPlus(a, b: PExpr): PPlusExpr = PPlusExpr(evalImpl: evalPlus, a: a, b: b)
-```
-
-### The `class` macro
-```nim
-import schooled
-
-class Human:
-   var name: string
-
-   method greet(this) =
-      echo("Greetings!")
-
-   impl Student:
-      var id: int
-
-      method greet(this) =
-         echo("Sup!")
-
-      proc newStudent(): Student =
-         new(result)
-
-   impl Professor:
-      method greet(this) =
-         echo("Greetings!")
-
-      proc newProfessor(): Professor =
-         new(result)
 ```
 
 ### Known quirks
