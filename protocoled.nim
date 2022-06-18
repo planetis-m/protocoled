@@ -1,35 +1,35 @@
 ## Interface macro for Nim
 ## =======================
-## 
+##
 ## The protocol macro allows writing an interface with less typing. Classes
 ## implementing that interface are defined using the ``impl`` command inside
-## the macro statement. Works in a similar way to the class macro. 
+## the macro statement. Works in a similar way to the class macro.
 ## It requires a typeless parameter, acting as the 'self' variable, to be
 ## declared in all procedures, but the ctor. Prefix with the export marker to
 ## make a class definition public. The constructor and clone function should
 ## explicitly use the result variable.
-## 
+##
 ## Example:
 ## ========
-## 
+##
 ## .. code-block:: nim
 ##   protocol *IUpdatable:
 ##     proc update*(this)
-## 
+##
 ##     impl Movable:
 ##       proc update(this) =
 ##         echo("Moving forward.")
-## 
+##
 ##       proc newMovable(): Movable =
 ##         new(result)
-## 
+##
 ##     impl *NotMovable:
 ##       proc update(this) =
 ##         echo("I'm staying put.")
-## 
+##
 ##       proc newNotMovable*(): NotMovable =
 ##         new(result)
-## 
+##
 import macros
 
 type
@@ -125,7 +125,7 @@ macro protocol*(head, body): untyped =
       case n.kind
       of nnkProcDef:
          if n.params.len < 2 or n.params[1][1].kind != nnkEmpty:
-            error(n.params.lineInfo & ": Method's 'this' parameter not found")
+            error(n.params.lineInfo & ": Method's 'self' parameter not found")
          n.params[1][1] = b.baseType
          let thisVar = n.params[1][0]
          expectKind(n.body, nnkEmpty) # Only a proc signature

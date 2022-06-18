@@ -6,7 +6,7 @@ This nimble package contains the ``protocol`` macro for easily implementing
 [interfaces](https://en.wikipedia.org/wiki/Composition_over_inheritance)
 in Nim.
 
-### The `protocol` macro
+## The `protocol` macro
 Example:
 
 ```nim
@@ -55,6 +55,6 @@ proc newPlus(a, b: PExpr): PPlusExpr = PPlusExpr(evalImpl: evalPlus, a: a, b: b)
 - The export marker `*` is using infix notation like so: `impl *Student`.
 - In the constructor `proc`, implicit return of the last expression is not supported.
 
-### License
+## License
 
 This library is distributed under the MIT license. For more information see `copying.txt`.
