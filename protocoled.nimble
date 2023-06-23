@@ -11,3 +11,7 @@ license       = "MIT"
 # Dependencies
 
 requires "nim >= 1.0.9"
+
+after install:
+  when defined(linux):
+    echo "hello"
